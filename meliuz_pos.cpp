@@ -39,7 +39,7 @@
 #include "getopt.h"
 
 #define MAX_VERSION	1
-#define MIN_VERSION	4
+#define MIN_VERSION	5
 #define SIZE 9999
 
 #define ARQUIVO_ESCOLHIDO 1
@@ -52,11 +52,9 @@ using namespace std;
 
 //VARIAVEIS GLOBAIS  
 ofstream logdir, logrotate, agenda ,ateos, cell;
-int i = 0,  cont = 0,  viaPinpad = 0, flag = 0, acao = 1, lixo = 0;
-string DATA_ATUAL;
-string trace, command, action, telefone, tecla, cstId ,cellphone ;
+int i = 0,  cont = 0,  viaPinpad = 0, flag = 0, acao = 1, lixo = 0, idenfifyOnly = 0, CUPOM = 0, status =0, state = 0;
+string DATA_ATUAL, trace, command, action, telefone, tecla, cstId ,cellphone ;
 char dta[11], dta_log[30], delimit[] = "|", delimit2[] = "/", LOJA[5], PDV[4];
-int CUPOM = 0, status =0, state = 0  ;
 FILE *meliuz_pos, *LISTA, *agendamento, *TRACE_LOG = NULL, *input , *cellAtual;
 bool DEBUG = false;
 
@@ -106,12 +104,11 @@ void pdvLayout(void){
 		case 1:
 			if ( state == 1 ){
 				cout << "LAYOUT 1" << endl;
-				break;
 			}
 			else if ( state == 2 ){
 				cout << "LAYOUT 2" << endl;
-				break;
 			}
+			break;
 		case 5:	
 			cout << "LAYOUT 7" << endl;
 			break;
@@ -526,10 +523,11 @@ void help() {
 	printf("[<Celular Identificado - ateos>]\n\n");
 	printf("[--via-pinpad -p]\n");
 	printf("[<Entrada de telefone via Pinpad.>]\n\n");
+	printf("[identify-only  -i]\n");
+	printf("[<Habilita Idenficacao unica de celular.>]\n\n");
 	printf("[--command -C]\n");
 	printf("[<Comando para funcao de entrada.>]\n\n");
 	exit(0);
-
 }
 
 //INICIO --> main()
@@ -540,6 +538,7 @@ int main(int argc, char** argv) {
 		{"command", required_argument  , NULL, 'C'},
 		{"via-pinpad", optional_argument  , NULL, 'p'},
 		{"cell-phone", optional_argument  , NULL, 'P'},
+		{"identify-only", optional_argument , NULL, 'i'},
 		{"help"   , no_argument        , NULL, 'h'},
 		{"version", no_argument        , NULL, 'V'},
 		{        0,                 0,    0,   0}
@@ -549,7 +548,7 @@ int main(int argc, char** argv) {
 		printf("Sem arqumentos!\n");
 		help();
 	}
-	while ((optc = getopt_long(argc, argv, "tp:PC:hV", OpcoesLongas, NULL)) != -1) {
+	while ((optc = getopt_long(argc, argv, "tp:PCi:hV", OpcoesLongas, NULL)) != -1) {
 		switch (optc) {
 			case 'h':
 				printf("System %s\n", argv[0]);
@@ -570,7 +569,9 @@ int main(int argc, char** argv) {
 			case 'P': //cellphone
 				cellphone = optarg;
 				break;
-
+			case 'i': //identificacao unica
+				idenfifyOnly = atoi(optarg);
+				break;
 			default: // Qualquer parametro nao tratado
 				printf("System %s\n", argv[0]);
 				printf("Parametro nao tratado %c \n", optc);
@@ -616,64 +617,115 @@ int main(int argc, char** argv) {
 	vTrace("--------------------------------------------------------- Inicio.");
 
 	if (command == "identify") {
-		acao = 1;
-		evaluate();
-		IDCliente();	
-		logdir << dta_log << "Action. " << action << endl;
-		logdir << dta_log << "Status. " << status << endl;
-		logdir << dta_log << "State. " << state << endl;
 
-		limpaVariaveis();
+		int controlCell = 0;
+	
+		if ( idenfifyOnly == 1 ){
+			cellAtual = fopen("/var/venditor/WRK/CELLCLI.dat","r");
+			if (cellAtual){
+				logdir << dta_log << "Existe arquivo." << endl;
+				int i = 0;
+				char c ,sizeCell[12];
+				string celular;
 
-		if ( cstId.size() > 10 ){
+				while ((c = getc(cellAtual)) != EOF){
+					//	 logdir << dta_log << "No while . Letra. " << c << endl;
+					sizeCell[i] = c;
+					i++;
+				}
+				sizeCell[i] = '\0';
 
-			logdir << dta_log << "------------------------------------------------------------" << endl;
-			logdir << dta_log << " - INICIALIZANDO VARIAVEIS MENSAGENS" << endl;
-			logdir << dta_log << "   VARIAVEL MENSAGEM0       Meliuz " << endl;
-			logdir << dta_log << "   VARIAVEL MENSAGEM1 " << endl;
-			logdir << dta_log << "   VARIAVEL MENSAGEM2 Cliente Identificado !!!" << endl;
-			logdir << dta_log << "   VARIAVEL MENSAGEM3 " << endl;
-			logdir << dta_log << "------------------------------------------------------------" << endl;
-			logdir << dta_log << "  CELULAR : " << cstId << endl;
-			logdir << dta_log << "------------------------------------------------------------" << endl;
+				celular = sizeCell;
+				telefoneIdentificado();
 
-			//limpaAteos();
-			//criarAgendamento();
-			celularCliente();
+				cout << "COMMAND 111" << endl;
+				cin >> lixo;
+				setbuf(stdin, NULL);
 
+				cout << "ACCEPT TITLE Telefone [" << celular << "] , ja identificado neste compra." << endl;
+				cout << "ACCEPT PROMPT Tecle qualquer tecla para sair." << endl;
+				cout << "ACCEPT READ" << endl;
+				getline (cin ,tecla);
+				setbuf(stdin, NULL);
 
-			cout << "MENSAGEM0=        Meliuz" << endl;
-			cout << "MENSAGEM1= " << endl;
-			cout << "MENSAGEM2=  Cliente Identificado !!!" << endl;
-			cout << "MENSAGEM3= " << endl;
+				controlCell = 1;
+			}else{
+				controlCell = 0;
 
-			cout << "COMMAND 111" << endl;
-			cin >> lixo;
-			setbuf(stdin, NULL);
-
-			cout << "ACCEPT TITLE Telefone identificado !!! " << endl;
-			cout << "ACCEPT PROMPT Tecle [ENTRA]" << endl;
-			cout << "ACCEPT READ" << endl;
-			getline (cin ,tecla);
-			setbuf(stdin, NULL);
+			}
+		}else{
+			controlCell = 0;
 		}
-		inicioVariaveis();
+		
+		if ( controlCell == 0 ){
 
-		cout << "COMMAND 14" << endl;
+			acao = 1;
+			evaluate();
+			IDCliente();	
+			logdir << dta_log << "Action. " << action << endl;
+			logdir << dta_log << "Status. " << status << endl;
+			logdir << dta_log << "State. " << state << endl;
+
+			limpaVariaveis();
+
+			if ( cstId.size() > 10 ){
+
+				logdir << dta_log << "------------------------------------------------------------" << endl;
+				logdir << dta_log << " - INICIALIZANDO VARIAVEIS MENSAGENS" << endl;
+				logdir << dta_log << "   VARIAVEL MENSAGEM0       Meliuz " << endl;
+				logdir << dta_log << "   VARIAVEL MENSAGEM1 " << endl;
+				logdir << dta_log << "   VARIAVEL MENSAGEM2 Cliente Identificado !!!" << endl;
+				logdir << dta_log << "   VARIAVEL MENSAGEM3 " << endl;
+				logdir << dta_log << "------------------------------------------------------------" << endl;
+				logdir << dta_log << "  CELULAR : " << cstId << endl;
+				logdir << dta_log << "------------------------------------------------------------" << endl;
+
+				limpaAteos();
+				criarAgendamento();
+				celularCliente();
+
+
+				cout << "MENSAGEM0=        Meliuz" << endl;
+				cout << "MENSAGEM1= " << endl;
+				cout << "MENSAGEM2=  Cliente Identificado !!!" << endl;
+				cout << "MENSAGEM3= " << endl;
+
+				cout << "COMMAND 111" << endl;
+				cin >> lixo;
+				setbuf(stdin, NULL);
+
+				cout << "ACCEPT TITLE Telefone identificado !!! " << endl;
+				cout << "ACCEPT PROMPT Tecle [ENTRA]" << endl;
+				cout << "ACCEPT READ" << endl;
+				getline (cin ,tecla);
+				setbuf(stdin, NULL);
+			}
+			inicioVariaveis();
+		}	
 		pdvLayout();	
+		cout << "COMMAND 14" << endl;
 		finalizar(EXIT_SUCESSO);	
 	}
 	else if (command == "ateos"){
-
-		logdir << dta_log << "------------------------ AT_EOS ----------------------------" << endl;
-		logdir << dta_log << " Celular Identificado :  " << cellphone << endl;
-		logdir << dta_log << "------------------------------------------------------------" << endl;
-		logdir << dta_log << "INTERNAL ANSWER 128 " << cellphone << endl;
-		logdir << dta_log << "STEP ANSWER 128 0 TELEFONE_MELIUZ " << cellphone << endl;
-		cout << "INTERNAL ANSWER 128 " << cellphone << endl;
-		cout << "STEP ANSWER 128 0 TELEFONE_MELIUZ " << cellphone << endl;
-		logdir << dta_log << "------------------------------------------------------------" << endl;
-
+		evaluate();
+		logdir << dta_log << " Action..................:  " << action.c_str() << endl;
+		if ( action == "OK"){
+			logdir << dta_log << "------------------------ AT_EOS ----------------------------" << endl;
+			logdir << dta_log << " Celular Identificado :  " << cellphone << endl;
+			logdir << dta_log << "------------------------------------------------------------" << endl;
+			logdir << dta_log << "INTERNAL ANSWER 128 " << cellphone << endl;
+			logdir << dta_log << "STEP ANSWER 128 0 TELEFONE_MELIUZ " << cellphone << endl;
+			cout << "INTERNAL ANSWER 128 " << cellphone << endl;
+			cout << "STEP ANSWER 128 0 TELEFONE_MELIUZ " << cellphone << endl;
+			logdir << dta_log << "------------------------------------------------------------" << endl;
+		}
+		cellAtual = fopen("/var/venditor/WRK/CELLCLI.dat","r");
+		if (cellAtual){
+			logdir << dta_log << "Apagando Celular Anterior."  << endl;
+			remove("/var/venditor/WRK/CELLCLI.dat");
+			fclose(cellAtual);
+		}	
+		
 		finalizar(EXIT_SUCESSO);
 	}
 	else if (command == "record"){
