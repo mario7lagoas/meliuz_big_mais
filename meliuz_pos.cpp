@@ -669,11 +669,7 @@ int main(int argc, char** argv) {
 		if ( controlCell == 0 ){
 
 			acao = 1;
-	//		evaluate();
 			IDCliente();	
-	//		logdir << dta_log << "Action. " << action << endl;
-	//		logdir << dta_log << "Status. " << status << endl;
-	//		logdir << dta_log << "State. " << state << endl;
 
 			limpaVariaveis();
 
