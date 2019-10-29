@@ -554,8 +554,12 @@ int main(int argc, char** argv) {
 				printf("System %s\n", argv[0]);
 				help();
 			case 'V': // Versao
+				printf("======================================================\n");
+				printf("Desenvolvido por.: Mario Sergio\n");
+				printf("Contato..........: mario@remaqbh.com.br\n");
 				printf("System %s\n", argv[0]);
 				printf("Version %d.%d - Date: [%s %s]\n", MAX_VERSION, MIN_VERSION, __DATE__, __TIME__);
+				printf("======================================================\n");
 				exit(0);
 			case 't': //trace
 				trace = optarg;
@@ -619,6 +623,11 @@ int main(int argc, char** argv) {
 	if (command == "identify") {
 
 		int controlCell = 0;
+		evaluate();
+		logdir << dta_log << " Action..: " << action << endl;
+		logdir << dta_log << " Status..: " << status << endl;
+		logdir << dta_log << " State...: " << state << endl;
+
 	
 		if ( idenfifyOnly == 1 ){
 			cellAtual = fopen("/var/venditor/WRK/CELLCLI.dat","r");
@@ -660,11 +669,11 @@ int main(int argc, char** argv) {
 		if ( controlCell == 0 ){
 
 			acao = 1;
-			evaluate();
+	//		evaluate();
 			IDCliente();	
-			logdir << dta_log << "Action. " << action << endl;
-			logdir << dta_log << "Status. " << status << endl;
-			logdir << dta_log << "State. " << state << endl;
+	//		logdir << dta_log << "Action. " << action << endl;
+	//		logdir << dta_log << "Status. " << status << endl;
+	//		logdir << dta_log << "State. " << state << endl;
 
 			limpaVariaveis();
 
@@ -683,7 +692,6 @@ int main(int argc, char** argv) {
 				limpaAteos();
 				criarAgendamento();
 				celularCliente();
-
 
 				cout << "MENSAGEM0=        Meliuz" << endl;
 				cout << "MENSAGEM1= " << endl;
@@ -709,6 +717,7 @@ int main(int argc, char** argv) {
 	else if (command == "ateos"){
 		evaluate();
 		logdir << dta_log << " Action..................:  " << action.c_str() << endl;
+	/*	
 		if ( action == "OK"){
 			logdir << dta_log << "------------------------ AT_EOS ----------------------------" << endl;
 			logdir << dta_log << " Celular Identificado :  " << cellphone << endl;
@@ -719,11 +728,12 @@ int main(int argc, char** argv) {
 			cout << "STEP ANSWER 128 0 TELEFONE_MELIUZ " << cellphone << endl;
 			logdir << dta_log << "------------------------------------------------------------" << endl;
 		}
+	*/
 		cellAtual = fopen("/var/venditor/WRK/CELLCLI.dat","r");
 		if (cellAtual){
 			logdir << dta_log << "Apagando Celular Anterior."  << endl;
-			remove("/var/venditor/WRK/CELLCLI.dat");
 			fclose(cellAtual);
+			remove("/var/venditor/WRK/CELLCLI.dat");
 		}	
 		
 		finalizar(EXIT_SUCESSO);
