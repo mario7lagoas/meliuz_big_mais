@@ -39,7 +39,7 @@
 #include "getopt.h"
 
 #define MAX_VERSION	1
-#define MIN_VERSION	5
+#define MIN_VERSION	6
 #define SIZE 9999
 
 #define ARQUIVO_ESCOLHIDO 1
@@ -130,31 +130,69 @@ void limpaVariaveis(void){
 }
 
 void inicioVariaveis(void){
+	string men00, men01, men02, men03;	
+
+	cout << "EVALUATE {MSGMELIUZ00}" << endl;
+	getline(cin, men00);
+	setbuf(stdin, NULL); 
+
+	cout << "EVALUATE {MSGMELIUZ01}" << endl;
+	getline(cin, men01);
+	setbuf(stdin, NULL); 
+
+	cout << "EVALUATE {MSGMELIUZ02}" << endl;
+	getline(cin, men02);
+	setbuf(stdin, NULL); 
+
+	cout << "EVALUATE {MSGMELIUZ03}" << endl;
+	getline(cin, men03);
+	setbuf(stdin, NULL); 
+		
 	logdir << dta_log << " - INICIALIZANDO VARIAVEIS MENSAGENS" << endl;
-	logdir << dta_log << "   VARIAVEL MENSAGEM0       Meliuz " << endl;
-	logdir << dta_log << "   VARIAVEL MENSAGEM1 Dinheiro de volta em todas as compras." << endl;
-	logdir << dta_log << "   VARIAVEL MENSAGEM2 " << endl;
-	logdir << dta_log << "   VARIAVEL MENSAGEM3 Digite o numero do telefone do cliente" << endl;
+	logdir << dta_log << "   VARIAVEL MSGMELIUZ00 / MENDAGEM0 : " << men00.c_str() << endl;
+	logdir << dta_log << "   VARIAVEL MSGMELIUZ01 / MENSAGEM1 : " << men01.c_str() << endl;
+	logdir << dta_log << "   VARIAVEL MSGMELIUZ02 / MENSAGEM2 : " << men02.c_str() << endl;
+	logdir << dta_log << "   VARIAVEL MSGMELIUZ02 / MENSAGEM3 : " << men03.c_str() << endl;
 	logdir << dta_log << "------------------------------------------------------------" << endl;
 
-	cout << "MENSAGEM0=        Meliuz" << endl;
-	cout << "MENSAGEM1= Dinheiro de volta em todas as compras." << endl;
-	cout << "MENSAGEM2=  " << endl;
-	cout << "MENSAGEM3= Digite o numero do telefone do cliente" << endl;
+	cout << "MENSAGEM0=" << men00 << endl;
+	cout << "MENSAGEM1=" << men01 << endl;
+	cout << "MENSAGEM2=" << men02 << endl;
+	cout << "MENSAGEM3=" << men03 << endl;
 
 }
 
 void telefoneIdentificado(void){
+	string men00, men01, men02, men03;	
+
+	cout << "EVALUATE {MSGMELIUZ00}" << endl;
+	getline(cin, men00);
+	setbuf(stdin, NULL); 
+
+	cout << "EVALUATE {MSGMELIUZ01}" << endl;
+	getline(cin, men01);
+	setbuf(stdin, NULL); 
+
+	cout << "EVALUATE {MSGMELIUZ02}" << endl;
+	getline(cin, men02);
+	setbuf(stdin, NULL); 
+
+	cout << "EVALUATE {MSGMELIUZ03}" << endl;
+	getline(cin, men03);
+	setbuf(stdin, NULL); 
+	
+	
 	logdir << dta_log << " - TELEFONE IDENTIFICADO" << endl;
-	logdir << dta_log << "   VARIAVEL MENSAGEM0       Meliuz " << endl;
-	logdir << dta_log << "   VARIAVEL MENSAGEM1 Dinheiro de volta em todas as compras." << endl;
-	logdir << dta_log << "   VARIAVEL MENSAGEM2 " << endl;
-	logdir << dta_log << "   VARIAVEL MENSAGEM3 Esta venda possui telefone identificado!" << endl;
+	logdir << dta_log << "   VARIAVEL MSGMELIUZ00 / MENDAGEM0 : " << men00.c_str() << endl;
+	logdir << dta_log << "   VARIAVEL MSGMELIUZ01 / MENSAGEM1 : " << men01.c_str() << endl;
+	logdir << dta_log << "   VARIAVEL MSGMELIUZ02 / MENSAGEM2 : " << men02.c_str() << endl;
+	logdir << dta_log << "   VARIAVEL DEFENIDO    /  MENSAGEM3 Esta venda possui telefone identificado!" << endl;
 	logdir << dta_log << "------------------------------------------------------------" << endl;
 
-	cout << "MENSAGEM0=        Meliuz" << endl;
-	cout << "MENSAGEM1= Dinheiro de volta em todas as compras." << endl;
-	cout << "MENSAGEM2=  " << endl;
+	cout << "MENSAGEM0=" << men00 << endl;
+	cout << "MENSAGEM1=" << men01 << endl;
+	cout << "MENSAGEM2=" << men02 << endl;
+
 	cout << "MENSAGEM3= Esta venda possui telefone identificado!" << endl;
 }
 
